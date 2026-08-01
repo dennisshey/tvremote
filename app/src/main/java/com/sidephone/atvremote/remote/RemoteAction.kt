@@ -12,7 +12,7 @@ enum class RemoteAction(val label: String) {
     LEFT("Left"),
     RIGHT("Right"),
     SELECT("Select"),
-    MENU("Menu / Back"),
+    BACK("Back"),
     HOME("Home"),
     PLAY_PAUSE("Play / Pause"),
     VOLUME_UP("Volume +"),

@@ -81,7 +81,7 @@ class RemoteController(
             RemoteAction.LEFT -> client.pressButton(HidCommand.Left)
             RemoteAction.RIGHT -> client.pressButton(HidCommand.Right)
             RemoteAction.SELECT -> client.pressButton(HidCommand.Select)
-            RemoteAction.MENU -> client.pressButton(HidCommand.Menu)
+            RemoteAction.BACK -> client.pressButton(HidCommand.Menu)
             RemoteAction.HOME -> client.pressButton(HidCommand.Home)
             RemoteAction.PLAY_PAUSE -> client.pressButton(HidCommand.PlayPause)
             RemoteAction.VOLUME_UP -> client.pressButton(HidCommand.VolumeUp)

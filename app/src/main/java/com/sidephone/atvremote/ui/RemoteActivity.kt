@@ -2,6 +2,7 @@ package com.sidephone.atvremote.ui
 
 import android.os.Bundle
 import android.view.Gravity
+import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -96,12 +97,32 @@ class RemoteActivity : AppCompatActivity() {
         controller.perform(action)
     }
 
+    /**
+     * Route mapped hardware keys straight to the activity's key callbacks. Without
+     * this, D-pad presses are consumed by the view hierarchy as focus navigation
+     * between the on-screen fallback buttons and never reach the Apple TV.
+     *
+     * The system back *gesture* also arrives as KEYCODE_BACK, but from the virtual
+     * keyboard — that one keeps its Android meaning (leave for the device list),
+     * while the physical Back key belongs to the remote (press = Back, hold = Home).
+     */
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        val keyCode = event.keyCode
+        val handled = !isGestureBack(event) &&
+            (KeyMapper.handles(keyCode) || KeyMapper.mapLongPress(keyCode) != null)
+        if (handled) {
+            return event.dispatch(this, window.decorView.keyDispatcherState, this)
+        }
+        return super.dispatchKeyEvent(event)
+    }
+
+    private fun isGestureBack(event: KeyEvent): Boolean =
+        event.keyCode == KeyEvent.KEYCODE_BACK &&
+            event.deviceId == KeyCharacterMap.VIRTUAL_KEYBOARD
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         when {
-            keyCode == KeyEvent.KEYCODE_BACK -> {
-                event.startTracking() // enables the long-press-to-exit callback
-                return true
-            }
+            isGestureBack(event) -> return super.onKeyDown(keyCode, event)
             KeyMapper.mapLongPress(keyCode) != null -> {
                 if (event.repeatCount == 0) event.startTracking()
                 return true
@@ -115,10 +136,6 @@ class RemoteActivity : AppCompatActivity() {
     }
 
     override fun onKeyLongPress(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            finish() // hold Back to leave the remote and release the keypad
-            return true
-        }
         KeyMapper.mapLongPress(keyCode)?.let {
             handleAction(it)
             return true
@@ -127,10 +144,7 @@ class RemoteActivity : AppCompatActivity() {
     }
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (event.isTracking && !event.isCanceled) handleAction(RemoteAction.MENU)
-            return true
-        }
+        if (isGestureBack(event)) return super.onKeyUp(keyCode, event)
         if (KeyMapper.mapLongPress(keyCode) != null) {
             // Long-press already fired the alternate action; a clean release fires the short one.
             if (event.isTracking && !event.isCanceled) KeyMapper.map(keyCode)?.let { handleAction(it) }
@@ -148,7 +162,7 @@ class RemoteActivity : AppCompatActivity() {
         binding.btnLeft.setOnClickListener { handleAction(RemoteAction.LEFT) }
         binding.btnRight.setOnClickListener { handleAction(RemoteAction.RIGHT) }
         binding.btnOk.setOnClickListener { handleAction(RemoteAction.SELECT) }
-        binding.btnMenu.setOnClickListener { handleAction(RemoteAction.MENU) }
+        binding.btnMenu.setOnClickListener { handleAction(RemoteAction.BACK) }
         binding.btnHome.setOnClickListener { handleAction(RemoteAction.HOME) }
         binding.btnPlay.setOnClickListener { handleAction(RemoteAction.PLAY_PAUSE) }
     }

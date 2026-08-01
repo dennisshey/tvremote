@@ -36,7 +36,7 @@
     <string name="btn_left">◀</string>
     <string name="btn_right">▶</string>
     <string name="btn_ok">OK</string>
-    <string name="btn_menu">Menu</string>
+    <string name="btn_menu">Back</string>
     <string name="btn_home">Home</string>
     <string name="btn_playpause">⏯</string>
 </resources>
