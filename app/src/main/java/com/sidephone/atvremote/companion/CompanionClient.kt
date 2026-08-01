@@ -124,12 +124,13 @@ class CompanionClient(
         sendCommand("_mcc", content)
     }
 
-    private suspend fun sendCommand(identifier: String, content: Map<String, Any?>): OpackDict {
-        return protocol.exchangeOpack(
-            FrameType.E_OPACK,
-            linkedMapOf("_i" to identifier, "_t" to 2, "_c" to content),
-        )
-    }
+    private suspend fun sendCommand(identifier: String, content: Map<String, Any?>): OpackDict =
+        withContext(Dispatchers.IO) {
+            protocol.exchangeOpack(
+                FrameType.E_OPACK,
+                linkedMapOf("_i" to identifier, "_t" to 2, "_c" to content),
+            )
+        }
 
     fun close() = connection.close()
 }
