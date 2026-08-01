@@ -1,0 +1,12 @@
+<resources>
+    <color name="background">#0E0E12</color>
+    <color name="surface">#1B1B22</color>
+    <color name="surface_variant">#26262F</color>
+    <color name="primary">#5E9BFF</color>
+    <color name="primary_dark">#3F6FCC</color>
+    <color name="on_background">#F2F2F5</color>
+    <color name="on_surface_muted">#9A9AA6</color>
+    <color name="accent_green">#4CD07D</color>
+    <color name="accent_red">#FF5D5D</color>
+    <color name="icon_background">#1B2A44</color>
+</resources>

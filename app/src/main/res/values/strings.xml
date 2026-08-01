@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">SidePhone ATV Remote</string>
+
+    <!-- Discovery -->
+    <string name="discovery_title">Apple TVs</string>
+    <string name="discovery_scanning">Scanning the network…</string>
+    <string name="discovery_empty">No Apple TVs found yet.\nMake sure this phone and the Apple TV are on the same Wi-Fi.</string>
+    <string name="discovery_rescan">Rescan</string>
+    <string name="discovery_add_manual">Add by IP address</string>
+    <string name="paired_badge">Paired</string>
+
+    <!-- Manual add -->
+    <string name="manual_title">Add Apple TV</string>
+    <string name="manual_host_hint">IP address (e.g. 192.168.1.20)</string>
+    <string name="manual_port_hint">Port (default 49152)</string>
+    <string name="manual_add">Add</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Pairing -->
+    <string name="pairing_title">Pair with Apple TV</string>
+    <string name="pairing_instructions">A 4-digit code should appear on your Apple TV. Type it in below and press Pair.</string>
+    <string name="pairing_pin_hint">PIN</string>
+    <string name="pairing_pair">Pair</string>
+    <string name="pairing_requesting">Asking the Apple TV to show a PIN…</string>
+    <string name="pairing_working">Pairing…</string>
+    <string name="pairing_success">Paired! Connecting…</string>
+    <string name="pairing_failed">Pairing failed: %1$s</string>
+
+    <!-- Remote -->
+    <string name="remote_connecting">Connecting…</string>
+    <string name="remote_connected">Connected</string>
+    <string name="remote_disconnected">Disconnected — press any key to reconnect</string>
+    <string name="remote_help_title">Keypad map</string>
+    <string name="btn_up">▲</string>
+    <string name="btn_down">▼</string>
+    <string name="btn_left">◀</string>
+    <string name="btn_right">▶</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_menu">Menu</string>
+    <string name="btn_home">Home</string>
+    <string name="btn_playpause">⏯</string>
+</resources>
