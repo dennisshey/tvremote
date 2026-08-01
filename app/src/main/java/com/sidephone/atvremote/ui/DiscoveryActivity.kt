@@ -49,6 +49,14 @@ class DiscoveryActivity : AppCompatActivity() {
 
         binding.rescanButton.setOnClickListener { restartDiscovery() }
         binding.manualButton.setOnClickListener { showManualAddDialog() }
+
+        // Skip straight to the last-used remote on a fresh launch; holding Back on
+        // the remote screen returns here to pick a different Apple TV.
+        if (savedInstanceState == null) {
+            credentialStore.lastDevice()?.let { device ->
+                startActivity(IntentExtras.intent(this, RemoteActivity::class.java, device))
+            }
+        }
     }
 
     override fun onResume() {

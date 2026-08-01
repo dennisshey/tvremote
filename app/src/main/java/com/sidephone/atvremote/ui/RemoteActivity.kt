@@ -49,6 +49,7 @@ class RemoteActivity : AppCompatActivity() {
         }
         device = parsed
         title = device.name
+        credentialStore.rememberLastDevice(device)
 
         controller = RemoteController(lifecycleScope).apply {
             onError = { message -> Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show() }
