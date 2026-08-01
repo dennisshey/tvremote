@@ -1,5 +1,9 @@
 # SidePhone ATV Remote
 
+[![CI](https://github.com/dennisshey/tvremote/actions/workflows/ci.yml/badge.svg)](https://github.com/dennisshey/tvremote/actions/workflows/ci.yml)
+
+<img src="docs/screenshot-remote.png" width="200" align="right" alt="The remote screen, connected to an Apple TV">
+
 An Android app that turns a **[SidePhone SP-01](https://sidephone.com)** into a
 physical remote for an **Apple TV** — navigate with the D-pad, type with the T9
 keypad, no touchscreen required.
@@ -24,14 +28,15 @@ keypad-only tile (no D-pad) is still fully usable.
 |---|---|
 | D‑pad ▲ ▼ ◀ ▶ | Navigate |
 | D‑pad centre · **5** | Select |
-| Back · **1** | Menu (back) |
+| Back · ⌫ · **1** | Back |
 | Menu key · **3** | Home |
 | **2 4 6 8** | Up / Left / Right / Down (virtual D‑pad) |
 | **0** | Play / Pause |
 | **7** · **9** | Skip backward / forward (15 s) |
 | **∗** · **#** | Volume − / + |
 | Hold **#** | Siri |
-| Hold **Back** | Exit the app (releases the keypad) |
+| Hold **Back** / **⌫** | Home |
+| Back swipe gesture | Leave the remote (device list) |
 | Volume rocker | Apple TV volume (if the tile has one) |
 
 The table lives in one place — [`KeyMapper.kt`](app/src/main/java/com/sidephone/atvremote/remote/KeyMapper.kt)
@@ -102,8 +107,13 @@ Studio works too.
 2. Launch **SidePhone ATV Remote**. Pick your Apple TV from the list (or *Add by
    IP* if discovery is blocked on your network).
 3. Enter the 4‑digit PIN shown on the TV. Pairing is remembered.
-4. You're on the remote screen — the keypad now drives the Apple TV. Hold **Back**
-   to leave.
+4. You're on the remote screen — the keypad now drives the Apple TV. The physical
+   Back key is the Apple TV's Back; use the **system back gesture** (swipe from
+   the screen edge) to leave the remote.
+
+After the first pairing the app reconnects to your last-used Apple TV
+automatically on launch; the back gesture drops you to the device list if you
+need to switch TVs.
 
 ---
 
@@ -122,9 +132,10 @@ Studio works too.
 - **Companion protocol only** (modern tvOS). The older MRP protocol isn't
   implemented; the code is structured so it could be added alongside.
 - Requires an Apple TV that can display a pairing PIN (all current models do).
-- End-to-end behaviour against real tvOS hardware hasn't been exercised in CI —
-  the crypto/serialization is vector-verified, but on-device testing is the last
-  mile. See `docs/DESIGN.md` for the exact handshake if you're debugging.
+- Tested end-to-end on an SP-01 driving an Apple TV 4K (AppleTV14,1) — pairing,
+  reconnect, and every mapped key verified against real hardware. CI runs the
+  crypto/serialization vector tests only; see `docs/DESIGN.md` for the exact
+  handshake if you're debugging against a different tvOS build.
 - Text entry (search fields) and app-launch shortcuts aren't wired up yet; the
   `CompanionClient` API has room for them.
 
@@ -136,6 +147,10 @@ app/src/main/java/com/sidephone/atvremote/
 ├── remote/      Device-agnostic layer: KeyMapper, RemoteAction, discovery, controller
 └── ui/          DiscoveryActivity, PairingActivity, RemoteActivity + views
 ```
+
+## License
+
+[MIT](LICENSE).
 
 ## Credits
 
