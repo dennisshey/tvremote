@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -38,6 +39,13 @@ class RemoteActivity : AppCompatActivity() {
         binding = ActivityRemoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        // Nothing on this screen may take focus, or the framework consumes the
+        // first D-pad press to exit touch mode and focus an on-screen button
+        // instead of delivering it. Must be done in code: ScrollView's
+        // constructor overwrites the equivalent XML attributes.
+        binding.root.isFocusable = false
+        binding.root.descendantFocusability = ViewGroup.FOCUS_BLOCK_DESCENDANTS
 
         val parsed = IntentExtras.device(intent)
         credentialStore = CredentialStore(this)

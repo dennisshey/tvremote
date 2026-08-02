@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Nothing on this screen may take focus (enforced in RemoteActivity.onCreate;
+     ScrollView's constructor overwrites the equivalent XML attributes). -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
