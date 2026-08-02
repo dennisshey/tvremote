@@ -86,9 +86,20 @@ Those reference vectors ship as JVM unit tests in
 
 ---
 
-## Build & install
+## Install
 
-The SP-01 has no Play Store, so you sideload the APK.
+Grab `sidephone-atv-remote.apk` from the
+[latest release](https://github.com/dennisshey/tvremote/releases/latest) and
+sideload it (the SP-01 has no Play Store):
+
+```bash
+adb install -r sidephone-atv-remote.apk
+```
+
+Release APKs are debug-signed by CI, so upgrading from a locally built APK (or
+vice versa) needs an uninstall first.
+
+## Build it yourself
 
 ```bash
 # Build a debug APK

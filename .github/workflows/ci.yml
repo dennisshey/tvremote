@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,3 +18,24 @@ jobs:
         run: ./gradlew test
       - name: Assemble debug APK
         run: ./gradlew assembleDebug
+      - name: Stage APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk sidephone-atv-remote.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sidephone-atv-remote-apk
+          path: sidephone-atv-remote.apk
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: sidephone-atv-remote-apk
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: sidephone-atv-remote.apk
+          generate_release_notes: true
