@@ -62,6 +62,7 @@ object KeyMapper {
     private val longPress: Map<Int, RemoteAction> = mapOf(
         KeyEvent.KEYCODE_POUND to RemoteAction.SIRI,
         KeyEvent.KEYCODE_5 to RemoteAction.HOME,
+        KeyEvent.KEYCODE_0 to RemoteAction.POWER,
         KeyEvent.KEYCODE_BACK to RemoteAction.HOME,
         KeyEvent.KEYCODE_DEL to RemoteAction.HOME,
     )
@@ -84,6 +85,7 @@ object KeyMapper {
         "7 / 9" to "Skip back / forward",
         "∗ / #" to "Volume − / +",
         "Hold #" to "Siri",
+        "Hold 0" to "Power (sleep / wake)",
         "Hold Back / ⌫" to "Home",
         "Back swipe gesture" to "Device list",
     )

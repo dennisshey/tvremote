@@ -2,6 +2,7 @@
 <!-- Nothing on this screen may take focus (enforced in RemoteActivity.onCreate;
      ScrollView's constructor overwrites the equivalent XML attributes). -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -12,16 +13,40 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/statusText"
+        <!-- Status line with the power toggle beside it, like the top of a real remote. -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_card"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="@string/remote_connecting"
-            android:textColor="@color/on_background"
-            android:textSize="14sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/statusText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/remote_connecting"
+                android:textColor="@color/on_background"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnPower"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/btn_power"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                app:icon="@drawable/ic_power"
+                app:iconPadding="0dp"
+                app:iconTint="@color/accent_red" />
+        </LinearLayout>
 
         <!-- On-screen D-pad (touchscreen fallback; the hardware keypad is primary). -->
         <LinearLayout

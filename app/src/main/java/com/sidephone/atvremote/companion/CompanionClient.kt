@@ -116,6 +116,13 @@ class CompanionClient(
         sendCommand("_hidC", linkedMapOf("_hBtS" to if (down) 1 else 2, "_hidC" to command.value))
     }
 
+    /** Current attention (power) state, or null if the Apple TV doesn't answer the query. */
+    suspend fun systemStatus(): SystemStatus? = runCatching {
+        val response = sendCommand("FetchAttentionState", linkedMapOf())
+        val content = response["_c"] as? OpackDict
+        SystemStatus.from((content?.get("state") as? Number)?.toInt())
+    }.getOrNull()
+
     suspend fun mediaControl(command: MediaControlCommand, args: Map<String, Any?> = emptyMap()) {
         val content = LinkedHashMap<String, Any?>().apply {
             put("_mcc", command.value)

@@ -5,6 +5,7 @@ import com.sidephone.atvremote.companion.HapCredentials
 import com.sidephone.atvremote.companion.HidCommand
 import com.sidephone.atvremote.companion.LocalDeviceInfo
 import com.sidephone.atvremote.companion.MediaControlCommand
+import com.sidephone.atvremote.companion.SystemStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -91,6 +92,13 @@ class RemoteController(
                 client.mediaControl(MediaControlCommand.SkipBy, mapOf("_skpS" to SKIP_SECONDS))
             RemoteAction.SKIP_BACKWARD ->
                 client.mediaControl(MediaControlCommand.SkipBy, mapOf("_skpS" to -SKIP_SECONDS))
+            RemoteAction.POWER -> {
+                // Toggle: wake a sleeping TV, put an awake one to sleep. If the TV
+                // won't answer the state query, assume awake — Sleep is a no-op on
+                // a sleeping TV, and any other button wakes it.
+                val asleep = client.systemStatus() == SystemStatus.Asleep
+                client.pressButton(if (asleep) HidCommand.Wake else HidCommand.Sleep)
+            }
         }
     }
 

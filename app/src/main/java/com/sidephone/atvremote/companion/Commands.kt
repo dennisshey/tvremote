@@ -23,6 +23,18 @@ enum class HidCommand(val value: Int) {
     PageDown(19),
 }
 
+/** Attention (power) states reported by "FetchAttentionState" (pyatv `companion/api.py`). */
+enum class SystemStatus(val value: Int) {
+    Asleep(1),
+    Screensaver(2),
+    Awake(3),
+    Idle(4);
+
+    companion object {
+        fun from(value: Int?): SystemStatus? = entries.firstOrNull { it.value == value }
+    }
+}
+
 /** Media-control codes understood by tvOS. */
 enum class MediaControlCommand(val value: Int) {
     Play(1),

@@ -174,6 +174,7 @@ class RemoteActivity : AppCompatActivity() {
         binding.btnMenu.setOnClickListener { handleAction(RemoteAction.BACK) }
         binding.btnHome.setOnClickListener { handleAction(RemoteAction.HOME) }
         binding.btnPlay.setOnClickListener { handleAction(RemoteAction.PLAY_PAUSE) }
+        binding.btnPower.setOnClickListener { handleAction(RemoteAction.POWER) }
     }
 
     private fun buildHelp() {

@@ -20,4 +20,5 @@ enum class RemoteAction(val label: String) {
     SKIP_FORWARD("Skip forward"),
     SKIP_BACKWARD("Skip backward"),
     SIRI("Siri"),
+    POWER("Power"),
 }

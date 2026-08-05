@@ -35,6 +35,7 @@ keypad-only tile (no D-pad) is still fully usable.
 | **7** · **9** | Skip backward / forward (15 s) |
 | **∗** · **#** | Volume − / + |
 | Hold **#** | Siri |
+| Hold **0** | Power (sleep / wake) |
 | Hold **Back** / **⌫** | Home |
 | Back swipe gesture | Leave the remote (device list) |
 | Volume rocker | Apple TV volume (if the tile has one) |

@@ -39,4 +39,5 @@
     <string name="btn_menu">Back</string>
     <string name="btn_home">Home</string>
     <string name="btn_playpause">⏯</string>
+    <string name="btn_power">Power</string>
 </resources>
