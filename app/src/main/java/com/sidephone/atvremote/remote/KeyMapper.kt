@@ -32,7 +32,7 @@ object KeyMapper {
 
         // Apple TV Back (the Companion "Menu" HID code). The SP-01 keypad's
         // backspace key arrives as KEYCODE_DEL — same intent. Holding either is
-        // Home (see longPress); the system back *gesture* is deliberately not
+        // Home Screen (see longPress); the system back *gesture* is deliberately not
         // mapped so it keeps its Android meaning — leave for the device list
         // (see RemoteActivity.isGestureBack).
         put(KeyEvent.KEYCODE_BACK, RemoteAction.BACK)
@@ -61,10 +61,10 @@ object KeyMapper {
     /** Long-press overrides. */
     private val longPress: Map<Int, RemoteAction> = mapOf(
         KeyEvent.KEYCODE_POUND to RemoteAction.SIRI,
-        KeyEvent.KEYCODE_5 to RemoteAction.HOME,
+        KeyEvent.KEYCODE_5 to RemoteAction.HOME_SCREEN,
         KeyEvent.KEYCODE_0 to RemoteAction.POWER,
-        KeyEvent.KEYCODE_BACK to RemoteAction.HOME,
-        KeyEvent.KEYCODE_DEL to RemoteAction.HOME,
+        KeyEvent.KEYCODE_BACK to RemoteAction.HOME_SCREEN,
+        KeyEvent.KEYCODE_DEL to RemoteAction.HOME_SCREEN,
     )
 
     fun map(keyCode: Int): RemoteAction? = shortPress[keyCode]
@@ -86,7 +86,7 @@ object KeyMapper {
         "∗ / #" to "Volume − / +",
         "Hold #" to "Siri",
         "Hold 0" to "Power (sleep / wake)",
-        "Hold Back / ⌫" to "Home",
+        "Hold Back / ⌫" to "Home Screen",
         "Back swipe gesture" to "Device list",
     )
 }

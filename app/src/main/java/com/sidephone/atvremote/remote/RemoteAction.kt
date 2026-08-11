@@ -14,6 +14,7 @@ enum class RemoteAction(val label: String) {
     SELECT("Select"),
     BACK("Back"),
     HOME("Home"),
+    HOME_SCREEN("Home Screen"),
     PLAY_PAUSE("Play / Pause"),
     VOLUME_UP("Volume +"),
     VOLUME_DOWN("Volume −"),

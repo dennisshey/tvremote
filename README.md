@@ -36,7 +36,7 @@ keypad-only tile (no D-pad) is still fully usable.
 | **∗** · **#** | Volume − / + |
 | Hold **#** | Siri |
 | Hold **0** | Power (sleep / wake) |
-| Hold **Back** / **⌫** | Home |
+| Hold **Back** / **⌫** | Home Screen (always, regardless of the tvOS "TV Button" setting) |
 | Back swipe gesture | Leave the remote (device list) |
 | Volume rocker | Apple TV volume (if the tile has one) |
 

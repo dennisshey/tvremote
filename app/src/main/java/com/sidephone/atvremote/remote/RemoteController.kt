@@ -84,6 +84,10 @@ class RemoteController(
             RemoteAction.SELECT -> client.pressButton(HidCommand.Select)
             RemoteAction.BACK -> client.pressButton(HidCommand.Menu)
             RemoteAction.HOME -> client.pressButton(HidCommand.Home)
+            // A held Menu press is how the Siri Remote jumps to the Home Screen;
+            // unlike the Home (TV) button it ignores the tvOS "TV Button" setting,
+            // which by default opens the Apple TV app instead.
+            RemoteAction.HOME_SCREEN -> client.pressButton(HidCommand.Menu, holdMs = 1000)
             RemoteAction.PLAY_PAUSE -> client.pressButton(HidCommand.PlayPause)
             RemoteAction.VOLUME_UP -> client.pressButton(HidCommand.VolumeUp)
             RemoteAction.VOLUME_DOWN -> client.pressButton(HidCommand.VolumeDown)
