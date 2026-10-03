@@ -9,7 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger
 /** A decoded OPACK dictionary keyed by its (usually String) keys. */
 typealias OpackDict = Map<Any?, Any?>
 
-class CompanionProtocolException(message: String, cause: Throwable? = null) : Exception(message, cause)
+open class CompanionProtocolException(message: String, cause: Throwable? = null) : Exception(message, cause)
+
+/** The device answered, but with an error payload (`_em`) instead of a result. */
+class CompanionDeviceException(message: String) : CompanionProtocolException(message)
 
 /**
  * Request/response layer on top of [CompanionConnection]. Auth frames (PS / PV)
@@ -77,7 +80,7 @@ class CompanionProtocol(
         try {
             connection.send(frameType, Opack.pack(data))
             val response = withTimeout(timeoutMs) { deferred.await() }
-            (response["_em"])?.let { throw CompanionProtocolException("Device error: $it") }
+            (response["_em"])?.let { throw CompanionDeviceException("Device error: $it") }
             return response
         } catch (e: TimeoutCancellationException) {
             throw CompanionProtocolException("Timed out waiting for $identifier", e)

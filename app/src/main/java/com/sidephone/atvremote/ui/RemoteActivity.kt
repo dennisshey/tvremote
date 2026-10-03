@@ -1,9 +1,13 @@
 package com.sidephone.atvremote.ui
 
+import android.annotation.SuppressLint
+import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.KeyCharacterMap
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -33,6 +37,7 @@ class RemoteActivity : AppCompatActivity() {
     private lateinit var device: AppleTvDevice
     private lateinit var controller: RemoteController
     private lateinit var credentialStore: CredentialStore
+    private var wifiLock: WifiManager.WifiLock? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +111,19 @@ class RemoteActivity : AppCompatActivity() {
         controller.perform(action)
     }
 
+    /** Press half of a holdable action; the button stays down on the TV until [handleHoldEnd]. */
+    private fun handleHoldStart(action: RemoteAction) {
+        if (controller.state.value != RemoteController.ConnectionState.Connected) {
+            connect()
+            return
+        }
+        controller.pressDown(action)
+    }
+
+    private fun handleHoldEnd(action: RemoteAction) {
+        controller.pressUp(action)
+    }
+
     /**
      * Route mapped hardware keys straight to the activity's key callbacks. Without
      * this, D-pad presses are consumed by the view hierarchy as focus navigation
@@ -137,7 +155,13 @@ class RemoteActivity : AppCompatActivity() {
                 return true
             }
             KeyMapper.handles(keyCode) -> {
-                if (event.repeatCount == 0) KeyMapper.map(keyCode)?.let { handleAction(it) }
+                if (event.repeatCount == 0) {
+                    KeyMapper.map(keyCode)?.let { action ->
+                        // Holdable actions send a real press on key-down and release
+                        // on key-up, so holding a D-pad key scrolls continuously.
+                        if (action.holdable) handleHoldStart(action) else handleAction(action)
+                    }
+                }
                 return true
             }
         }
@@ -159,22 +183,84 @@ class RemoteActivity : AppCompatActivity() {
             if (event.isTracking && !event.isCanceled) KeyMapper.map(keyCode)?.let { handleAction(it) }
             return true
         }
+        KeyMapper.map(keyCode)?.let { action ->
+            if (action.holdable) {
+                handleHoldEnd(action)
+                return true
+            }
+        }
         if (KeyMapper.handles(keyCode)) return true // consumed on key-down
         return super.onKeyUp(keyCode, event)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!this::controller.isInitialized) return
+        acquireWifiLock()
+        controller.ensureConnected()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Never leave a button down on the TV when the screen loses focus — the
+        // matching key-up would be missed and the TV would keep scrolling.
+        if (this::controller.isInitialized) controller.releaseHeld()
+        wifiLock?.takeIf { it.isHeld }?.release()
+    }
+
+    /**
+     * Keep Wi-Fi out of power-save while the remote is on screen. Power-save
+     * delays packets by hundreds of ms and lets the TV time the session out,
+     * which shows up as laggy presses and dropped connections.
+     */
+    private fun acquireWifiLock() {
+        val lock = wifiLock ?: run {
+            val wifi = applicationContext.getSystemService(WifiManager::class.java) ?: return
+            val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                WifiManager.WIFI_MODE_FULL_LOW_LATENCY
+            } else {
+                @Suppress("DEPRECATION")
+                WifiManager.WIFI_MODE_FULL_HIGH_PERF
+            }
+            wifi.createWifiLock(mode, "sidephone:remote").apply { setReferenceCounted(false) }
+                .also { wifiLock = it }
+        }
+        if (!lock.isHeld) lock.acquire()
     }
 
     // ---------- On-screen fallback + help ----------
 
     private fun wireOnScreenButtons() {
-        binding.btnUp.setOnClickListener { handleAction(RemoteAction.UP) }
-        binding.btnDown.setOnClickListener { handleAction(RemoteAction.DOWN) }
-        binding.btnLeft.setOnClickListener { handleAction(RemoteAction.LEFT) }
-        binding.btnRight.setOnClickListener { handleAction(RemoteAction.RIGHT) }
-        binding.btnOk.setOnClickListener { handleAction(RemoteAction.SELECT) }
+        wireHoldable(binding.btnUp, RemoteAction.UP)
+        wireHoldable(binding.btnDown, RemoteAction.DOWN)
+        wireHoldable(binding.btnLeft, RemoteAction.LEFT)
+        wireHoldable(binding.btnRight, RemoteAction.RIGHT)
+        wireHoldable(binding.btnOk, RemoteAction.SELECT)
         binding.btnMenu.setOnClickListener { handleAction(RemoteAction.BACK) }
         binding.btnHome.setOnClickListener { handleAction(RemoteAction.HOME) }
         binding.btnPlay.setOnClickListener { handleAction(RemoteAction.PLAY_PAUSE) }
         binding.btnPower.setOnClickListener { handleAction(RemoteAction.POWER) }
+    }
+
+    /** Touch-and-hold: finger down presses the button on the TV, lifting releases it. */
+    @SuppressLint("ClickableViewAccessibility")
+    private fun wireHoldable(button: View, action: RemoteAction) {
+        button.setOnTouchListener { view, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> {
+                    view.isPressed = true
+                    handleHoldStart(action)
+                    true
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    view.isPressed = false
+                    handleHoldEnd(action)
+                    if (event.actionMasked == MotionEvent.ACTION_UP) view.performClick()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun buildHelp() {

@@ -1,6 +1,7 @@
 package com.sidephone.atvremote.companion
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
@@ -107,9 +108,34 @@ class CompanionClient(
 
     /** Press and release a button (optionally holding it for [holdMs]). */
     suspend fun pressButton(command: HidCommand, holdMs: Long = 0) {
-        hid(command, down = true)
-        if (holdMs > 0) delay(holdMs)
-        hid(command, down = false)
+        try {
+            buttonDown(command)
+            if (holdMs > 0) delay(holdMs)
+        } finally {
+            // The release must go out even on cancellation/timeout — a button left
+            // down keeps auto-repeating on the TV until the session dies.
+            withContext(NonCancellable) { buttonUp(command) }
+        }
+    }
+
+    /** Press a button and leave it held; tvOS auto-repeats until [buttonUp]. */
+    suspend fun buttonDown(command: HidCommand) = hid(command, down = true)
+
+    /** Release a button previously held with [buttonDown]. */
+    suspend fun buttonUp(command: HidCommand) = hid(command, down = false)
+
+    /**
+     * Cheap request/response used as a keepalive: it generates traffic (so Wi-Fi
+     * power-save and idle timeouts don't kill the session) and proves the Apple TV
+     * still answers. An error reply still counts as alive; only a timeout or an
+     * I/O failure propagates.
+     */
+    suspend fun keepAlive() {
+        try {
+            sendCommand("FetchAttentionState", linkedMapOf())
+        } catch (_: CompanionDeviceException) {
+            // The device answered (with an error) — the link is alive.
+        }
     }
 
     private suspend fun hid(command: HidCommand, down: Boolean) {

@@ -61,6 +61,7 @@ class CompanionConnection(
     fun connect(timeoutMs: Int = 5000) {
         val sock = Socket()
         sock.tcpNoDelay = true
+        sock.keepAlive = true
         sock.connect(InetSocketAddress(host, port), timeoutMs)
         socket = sock
         input = DataInputStream(sock.getInputStream())

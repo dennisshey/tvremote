@@ -7,6 +7,8 @@
     <!-- mDNS/Bonjour discovery of _companion-link._tcp needs multicast + wifi state. -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <!-- Wi-Fi lock keeps the radio out of power-save while the remote is on screen. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -37,7 +39,7 @@
         <activity
             android:name=".ui.RemoteActivity"
             android:exported="false"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
     </application>

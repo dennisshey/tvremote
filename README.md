@@ -26,7 +26,7 @@ keypad-only tile (no D-pad) is still fully usable.
 
 | Key (SP-01) | Action |
 |---|---|
-| D‑pad ▲ ▼ ◀ ▶ | Navigate |
+| D‑pad ▲ ▼ ◀ ▶ | Navigate (hold to scroll continuously) |
 | D‑pad centre · **5** | Select |
 | Back · ⌫ · **1** | Back |
 | Menu key · **3** | Home |

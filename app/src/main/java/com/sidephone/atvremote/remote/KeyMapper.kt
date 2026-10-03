@@ -77,6 +77,7 @@ object KeyMapper {
     /** Human-readable mapping for the on-screen help sheet. */
     val cheatSheet: List<Pair<String, String>> = listOf(
         "D-pad" to "Navigate",
+        "Hold D-pad" to "Scroll continuously",
         "D-pad centre / 5" to "Select",
         "Back / ⌫ / 1" to "Back",
         "Menu / 3" to "Home",
